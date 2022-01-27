@@ -11,8 +11,8 @@ const BookSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    pages: {
-      type: Number,
+    cover: {
+      type: String,
       required: false,
     },
     username: {
