@@ -71,20 +71,39 @@ router.get("/:id", async (req, res) => {
 router.get("/", async (req, res) => {
   const username = req.query.user;
   const catname = req.query.cat;
+  // const limit = (req.query.limit)*1;// for converting into int
+  // const page = req.query.page*1;
+  let limit = 10;
+  let page = 1;
+  if (req.query.limit) {
+    limit = req.query.limit * 1;
+  }
+  if (req.query.page) {
+    page = req.query.page * 1;
+  }
   try {
     let Book;
     if (username) {
-      Book = await book.find({ username });
+      Book = await book
+        .find({ username })
+        .skip((page - 1) * limit)
+        .limit(limit); //pagenation
     } else if (catname) {
-      Book = await book.find({
-        categories: {
-          $in: [catname],
-        },
-      });
+      Book = await book
+        .find({
+          categories: {
+            $in: [catname],
+          },
+        })
+        .skip((page - 1) * limit)
+        .limit(limit);
     }
     // if no category and username given,return all book
     else {
-      Book = await book.find();
+      Book = await book
+        .find()
+        .skip((page - 1) * limit)
+        .limit(limit);
     }
     res.status(200).json(Book);
   } catch (err) {
