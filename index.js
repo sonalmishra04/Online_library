@@ -11,6 +11,7 @@ const path = require("path");
 
 dotenv.config();
 app.use(express.json());
+//database
 mongoose
   .connect(process.env.DATABASE_URL, {
     useNewUrlParser: true,

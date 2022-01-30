@@ -1,13 +1,40 @@
 const router = require("express").Router();
 const User = require("../models/user");
 const book = require("../models/book");
+const Category = require("../models/category");
 
 //Create a new book
 router.post("/", async (req, res) => {
+  let categories = req.body.categories;
+  let catId = [];
+  for (let category of categories) {
+    let result = await Category.find({
+      name: category,
+    });
+    console.log(result);
+    catId.push(result[0]._id);
+  }
+  console.log(catId);
+  req.body.categories = catId;
   const newbook = new book(req.body);
   try {
     const savedBook = await newbook.save();
     res.status(200).json(savedBook);
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
+
+//Get category of book---populate
+router.get("/category/:name", async (req, res) => {
+  try {
+    let name = req.params.name;
+    let categories = await book
+      .find({
+        name: name,
+      })
+      .populate("categories");
+    res.status(200).json(categories);
   } catch (err) {
     res.status(500).json(err);
   }

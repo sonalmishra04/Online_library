@@ -20,10 +20,12 @@ const BookSchema = new mongoose.Schema(
       required: true,
       unique: true,
     },
-    categories: {
-      type: Array,
-      required: false,
-    },
+    categories: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Category",
+      },
+    ],
   },
   { timestamps: true }
 );
